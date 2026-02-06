@@ -1201,6 +1201,382 @@ body::after {
     }
 }
 
+/* ==========================================
+   MOBILE OPTIMIZATION - Touch-friendly & Readable
+   ========================================== */
+
+@media (max-width: 768px) {
+    :root {
+        --section-padding: 60px;
+        --nav-height: 70px;
+    }
+
+    /* Container mobile */
+    .container {
+        padding: 0 20px;
+    }
+
+    /* Navigation mobile */
+    .nav-container {
+        padding: 0 20px;
+    }
+
+    .nav-toggle {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        width: 44px;
+        height: 44px;
+        align-items: center;
+        justify-content: center;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        z-index: 1001;
+    }
+
+    .hamburger,
+    .hamburger::before,
+    .hamburger::after {
+        width: 24px;
+        height: 2px;
+        background: var(--text-primary);
+        transition: all 0.3s ease;
+    }
+
+    .nav-menu {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        height: 100vh;
+        height: 100dvh;
+        background: rgba(10, 10, 10, 0.98);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 40px;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.4s ease;
+    }
+
+    .nav-menu.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .nav-link {
+        font-size: 24px;
+        font-weight: 500;
+        letter-spacing: 0.05em;
+        padding: 16px 32px;
+    }
+
+    .nav-toggle.active .hamburger {
+        background: transparent;
+    }
+
+    .nav-toggle.active .hamburger::before {
+        transform: rotate(45deg) translate(5px, 5px);
+    }
+
+    .nav-toggle.active .hamburger::after {
+        transform: rotate(-45deg) translate(5px, -5px);
+    }
+
+    /* Hero mobile */
+    .hero {
+        min-height: 100vh;
+        min-height: 100dvh;
+        padding: 120px 0 80px;
+    }
+
+    .hero-content {
+        text-align: center;
+        padding: 0 10px;
+    }
+
+    .hero-subtitle {
+        font-size: 12px;
+        letter-spacing: 0.15em;
+        margin-bottom: 24px;
+    }
+
+    .hero-title {
+        font-size: clamp(42px, 12vw, 72px);
+        line-height: 1.1;
+        margin-bottom: 24px;
+    }
+
+    .hero-title span {
+        display: block;
+    }
+
+    .hero-tagline {
+        font-size: 15px;
+        line-height: 1.7;
+        margin-bottom: 40px;
+        max-width: 100%;
+        padding: 0 10px;
+    }
+
+    .hero-cta {
+        width: 100%;
+        max-width: 280px;
+        padding: 18px 32px;
+        font-size: 13px;
+        justify-content: center;
+        /* Touch-friendly minimum */
+        min-height: 56px;
+    }
+
+    .scroll-indicator {
+        bottom: 30px;
+    }
+
+    /* Compositions mobile */
+    .compositions-header {
+        display: block;
+        text-align: center;
+        margin-bottom: 48px;
+    }
+
+    .compositions-label {
+        margin-bottom: 16px;
+        display: block;
+    }
+
+    .compositions-intro {
+        font-size: 16px;
+        line-height: 1.7;
+        padding: 0 10px;
+    }
+
+    .composition-card {
+        display: block;
+        padding: 24px 20px;
+        margin-bottom: 24px;
+    }
+
+    .composition-number {
+        display: none;
+    }
+
+    .composition-title {
+        font-size: clamp(24px, 7vw, 32px);
+        margin-bottom: 8px;
+    }
+
+    .composition-year {
+        font-size: 11px;
+        margin-bottom: 16px;
+        display: block;
+    }
+
+    .composition-description {
+        font-size: 14px;
+        line-height: 1.8;
+        margin: 16px 0;
+    }
+
+    .composition-tags {
+        gap: 8px;
+        margin-top: 16px;
+        flex-wrap: wrap;
+    }
+
+    .tag {
+        font-size: 10px;
+        padding: 8px 14px;
+    }
+
+    /* Audio player mobile - Touch-friendly */
+    .audio-player {
+        margin-top: 24px;
+        padding: 16px;
+        flex-direction: column;
+        gap: 16px;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 12px;
+    }
+
+    .play-btn {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        /* Touch target minimum 48px */
+    }
+
+    .play-btn svg {
+        width: 24px;
+        height: 24px;
+    }
+
+    .progress-container {
+        width: 100%;
+    }
+
+    .progress-bar {
+        height: 6px;
+        border-radius: 3px;
+        /* Easier to tap */
+    }
+
+    .time-display {
+        margin-top: 10px;
+        font-size: 12px;
+    }
+
+    .audio-visualizer {
+        height: 40px;
+        gap: 4px;
+        padding: 0 8px;
+    }
+
+    .visualizer-bar {
+        width: 4px;
+    }
+
+    /* À propos mobile */
+    .apropos-grid {
+        display: block;
+    }
+
+    .apropos-content {
+        padding: 0 10px;
+    }
+
+    .apropos-title {
+        font-size: clamp(32px, 10vw, 48px);
+        text-align: center;
+    }
+
+    .apropos-text {
+        font-size: 15px;
+        line-height: 1.8;
+        text-align: center;
+    }
+
+    .apropos-image {
+        margin-top: 40px;
+        max-width: 280px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .apropos-stats {
+        grid-template-columns: 1fr 1fr;
+        gap: 32px;
+        margin-top: 48px;
+    }
+
+    .stat-number {
+        font-size: 36px;
+    }
+
+    .stat-label {
+        font-size: 11px;
+    }
+
+    /* Contact mobile */
+    .contact-grid {
+        display: block;
+    }
+
+    .contact-title {
+        font-size: clamp(28px, 9vw, 42px);
+        text-align: center;
+    }
+
+    .contact-text {
+        font-size: 14px;
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .contact-item {
+        justify-content: center;
+        padding: 16px 0;
+    }
+
+    .contact-link {
+        font-size: 14px;
+        /* Touch-friendly */
+        padding: 12px 20px;
+    }
+
+    /* Footer mobile */
+    .footer {
+        padding: 40px 20px;
+        text-align: center;
+    }
+
+    .footer-content {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    /* Reduce animations on mobile for performance */
+    .background-fluid {
+        display: none;
+    }
+
+    body::before,
+    body::after {
+        filter: blur(80px);
+        opacity: 0.7;
+    }
+}
+
+/* ==========================================
+   SMALL PHONES (< 480px)
+   ========================================== */
+
+@media (max-width: 480px) {
+    .hero-title {
+        font-size: clamp(36px, 11vw, 48px);
+    }
+
+    .hero-cta {
+        width: 100%;
+        max-width: none;
+        margin: 0 20px;
+    }
+
+    .apropos-stats {
+        grid-template-columns: 1fr;
+        gap: 24px;
+        text-align: center;
+    }
+
+    .audio-player {
+        padding: 14px;
+    }
+
+    .play-btn {
+        width: 56px;
+        height: 56px;
+    }
+
+    .composition-title {
+        font-size: 22px;
+    }
+
+    .tag {
+        font-size: 9px;
+        padding: 6px 12px;
+    }
+}
+
+/* ==========================================
+   ACCESSIBILITY - Reduced Motion
+   ========================================== */
+
 @media (prefers-reduced-motion: reduce) {
 
     *,
@@ -1208,9 +1584,55 @@ body::after {
     *::after {
         animation-duration: 0.01ms !important;
         transition-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
     }
 
     html {
         scroll-behavior: auto;
+    }
+
+    body::before,
+    body::after,
+    .background-fluid {
+        animation: none;
+    }
+}
+
+/* ==========================================
+   TOUCH DEVICE OPTIMIZATIONS
+   ========================================== */
+
+@media (hover: none) and (pointer: coarse) {
+
+    /* Remove hover effects on touch devices */
+    .composition-card:hover {
+        transform: none;
+        padding-left: 16px;
+    }
+
+    .hero-cta:hover {
+        transform: none;
+    }
+
+    .play-btn:hover {
+        transform: none;
+    }
+
+    /* Active states instead */
+    .hero-cta:active {
+        transform: scale(0.98);
+        opacity: 0.9;
+    }
+
+    .play-btn:active {
+        transform: scale(0.95);
+    }
+
+    .composition-card:active {
+        background: rgba(255, 255, 255, 0.04);
+    }
+
+    .nav-link:active {
+        color: var(--accent-orange);
     }
 }

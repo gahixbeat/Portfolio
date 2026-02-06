@@ -7,17 +7,15 @@
     <meta name="description" content="Portfolio de Gaétan His, compositeur de musique orchestrale et musique de film">
     <title>Gaétan His | Compositeur</title>
 
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Raleway:wght@300;400;500;600&display=swap"
-        rel="stylesheet">
+    <!-- System fonts (SF Pro style) - no external fonts needed -->
 
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+    <!-- Background fluid layer -->
+    <div class="background-fluid"></div>
+
     <!-- ========================= -->
     <!-- Navigation principale     -->
     <!-- ========================= -->
@@ -41,11 +39,17 @@
     <!-- ========================= -->
     <header class="hero" id="accueil">
         <div class="hero-overlay"></div>
-        <div class="hero-content">
-            <p class="hero-subtitle fade-in">Compositeur de musique orchestrale</p>
-            <h1 class="hero-title fade-in">Gaétan His</h1>
-            <p class="hero-tagline fade-in">Créateur d'univers sonores pour le cinéma et le concert</p>
-            <a href="#compositions" class="hero-cta fade-in">Découvrir mes œuvres</a>
+        <div class="container">
+            <div class="hero-content">
+                <p class="hero-subtitle fade-in">Compositeur de musique orchestrale</p>
+                <h1 class="hero-title fade-in">
+                    <span>Musique,</span>
+                    <span class="accent">Émotion</span>
+                </h1>
+                <p class="hero-tagline fade-in">Créateur d'univers sonores pour le cinéma et le concert. Chaque
+                    composition est une histoire, chaque note une émotion.</p>
+                <a href="#compositions" class="hero-cta fade-in">Découvrir mes œuvres</a>
+            </div>
         </div>
         <div class="scroll-indicator">
             <span></span>
@@ -57,11 +61,15 @@
     <!-- ========================= -->
     <section class="section compositions" id="compositions">
         <div class="container">
-            <h2 class="section-title reveal">Compositions</h2>
-            <p class="section-subtitle reveal">Une sélection de mes œuvres orchestrales</p>
+            <div class="compositions-header reveal">
+                <span class="compositions-label">Œuvres</span>
+                <p class="compositions-intro">Une sélection de mes compositions orchestrales, créées pour le cinéma, le
+                    concert et l'émotion pure.</p>
+            </div>
 
             <!-- Composition 1 -->
             <article class="composition-card reveal">
+                <span class="composition-number">01</span>
                 <div class="composition-info">
                     <h3 class="composition-title">L'Éveil des Titans</h3>
                     <span class="composition-year">2024</span>
@@ -115,6 +123,7 @@
 
             <!-- Composition 2 -->
             <article class="composition-card reveal">
+                <span class="composition-number">02</span>
                 <div class="composition-info">
                     <h3 class="composition-title">Murmures de l'Aube</h3>
                     <span class="composition-year">2023</span>
@@ -168,6 +177,7 @@
 
             <!-- Composition 3 -->
             <article class="composition-card reveal">
+                <span class="composition-number">03</span>
                 <div class="composition-info">
                     <h3 class="composition-title">La Traversée des Ombres</h3>
                     <span class="composition-year">2023</span>
@@ -221,6 +231,7 @@
 
             <!-- Composition 4 -->
             <article class="composition-card reveal">
+                <span class="composition-number">04</span>
                 <div class="composition-info">
                     <h3 class="composition-title">Lumière</h3>
                     <span class="composition-year">2024</span>

@@ -85,10 +85,21 @@ document.addEventListener('DOMContentLoaded', () => {
     revealOnScroll(); // Vérifier au chargement
 
     // ============================
-    // Lecteur Audio
+    // Lecteur Audio avec Visualiseur
     // ============================
     const audioPlayers = document.querySelectorAll('.audio-player');
     let currentlyPlaying = null;
+    let currentAudioContext = null;
+    let currentAnalyser = null;
+    let animationId = null;
+
+    // Créer le contexte audio (Web Audio API)
+    const createAudioContext = () => {
+        if (!currentAudioContext) {
+            currentAudioContext = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        return currentAudioContext;
+    };
 
     audioPlayers.forEach(player => {
         const playBtn = player.querySelector('.play-btn');
@@ -97,6 +108,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const currentTimeEl = player.querySelector('.current-time');
         const durationEl = player.querySelector('.duration');
         const audio = player.querySelector('audio');
+        const visualizerBars = player.querySelectorAll('.visualizer-bar');
+
+        let audioSource = null;
+        let analyser = null;
+        let isConnected = false;
 
         // Formater le temps en mm:ss
         const formatTime = (seconds) => {
@@ -106,9 +122,87 @@ document.addEventListener('DOMContentLoaded', () => {
             return `${mins}:${secs.toString().padStart(2, '0')}`;
         };
 
+        // Mettre à jour le visualiseur
+        const updateVisualizer = () => {
+            if (!analyser || audio.paused) return;
+
+            const dataArray = new Uint8Array(analyser.frequencyBinCount);
+            analyser.getByteFrequencyData(dataArray);
+
+            // Mapper les fréquences aux barres
+            const barCount = visualizerBars.length;
+            const step = Math.floor(dataArray.length / barCount);
+
+            visualizerBars.forEach((bar, index) => {
+                const value = dataArray[index * step];
+                const height = Math.max(4, (value / 255) * 28);
+                bar.style.height = `${height}px`;
+            });
+
+            animationId = requestAnimationFrame(updateVisualizer);
+        };
+
+        // Configurer Web Audio API (optionnel, ne bloque pas la lecture)
+        const setupAudioContext = () => {
+            if (isConnected) return true;
+
+            // Désactiver Web Audio API en local (file://) pour éviter les problèmes CORS et le silence
+            if (window.location.protocol === 'file:') {
+                console.log('Mode local détecté : Visualiseur désactivé pour garantir le son');
+                return false;
+            }
+
+            try {
+                const ctx = createAudioContext();
+
+                // Vérifier si déjà connecté
+                if (audio._sourceNode) {
+                    analyser = ctx.createAnalyser();
+                    analyser.fftSize = 64;
+                    audio._sourceNode.connect(analyser);
+                    analyser.connect(ctx.destination);
+                    isConnected = true;
+                    player.classList.add('visualizing');
+                    return true;
+                }
+
+                audioSource = ctx.createMediaElementSource(audio);
+                audio._sourceNode = audioSource; // Stocker la référence
+                analyser = ctx.createAnalyser();
+                analyser.fftSize = 64;
+
+                audioSource.connect(analyser);
+                analyser.connect(ctx.destination);
+
+                isConnected = true;
+                player.classList.add('visualizing');
+                return true;
+            } catch (e) {
+                console.log('Web Audio API non disponible pour ce fichier:', e.message);
+                // Ne pas bloquer la lecture - l'audio fonctionnera sans visualiseur
+                return false;
+            }
+        };
+
+        // Gestion du chargement
+        audio.addEventListener('waiting', () => {
+            player.classList.add('loading');
+        });
+
+        audio.addEventListener('canplay', () => {
+            player.classList.remove('loading');
+        });
+
+        audio.addEventListener('loadstart', () => {
+            if (audio.readyState < 3) {
+                player.classList.add('loading');
+            }
+        });
+
         // Mettre à jour la durée quand les métadonnées sont chargées
         audio.addEventListener('loadedmetadata', () => {
             durationEl.textContent = formatTime(audio.duration);
+            player.classList.remove('loading');
         });
 
         // Bouton play/pause
@@ -116,17 +210,48 @@ document.addEventListener('DOMContentLoaded', () => {
             // Arrêter l'autre lecteur en cours
             if (currentlyPlaying && currentlyPlaying !== audio) {
                 currentlyPlaying.pause();
-                currentlyPlaying.parentElement.querySelector('.play-btn').classList.remove('playing');
+                const otherPlayer = currentlyPlaying.closest('.audio-player');
+                otherPlayer.querySelector('.play-btn').classList.remove('playing');
+                otherPlayer.classList.remove('playing');
+                if (animationId) {
+                    cancelAnimationFrame(animationId);
+                }
             }
 
             if (audio.paused) {
-                audio.play();
-                playBtn.classList.add('playing');
-                currentlyPlaying = audio;
+                // Reprendre le contexte audio si suspendu
+                if (currentAudioContext && currentAudioContext.state === 'suspended') {
+                    currentAudioContext.resume();
+                }
+
+                // Jouer l'audio d'abord
+                audio.play().then(() => {
+                    playBtn.classList.add('playing');
+                    player.classList.add('playing');
+                    currentlyPlaying = audio;
+
+                    // Essayer d'initialiser le visualiseur après lecture réussie
+                    try {
+                        if (setupAudioContext()) {
+                            currentAnalyser = analyser;
+                            updateVisualizer();
+                        }
+                    } catch (e) {
+                        // Visualiseur optionnel - l'audio joue quand même
+                        console.log('Visualiseur non disponible');
+                    }
+                }).catch(err => {
+                    console.log('Erreur de lecture:', err);
+                    player.classList.remove('loading');
+                });
             } else {
                 audio.pause();
                 playBtn.classList.remove('playing');
+                player.classList.remove('playing');
                 currentlyPlaying = null;
+                if (animationId) {
+                    cancelAnimationFrame(animationId);
+                }
             }
         });
 
@@ -147,9 +272,17 @@ document.addEventListener('DOMContentLoaded', () => {
         // Fin de la lecture
         audio.addEventListener('ended', () => {
             playBtn.classList.remove('playing');
+            player.classList.remove('playing');
             progressFill.style.width = '0%';
             currentTimeEl.textContent = '0:00';
             currentlyPlaying = null;
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+            }
+            // Réinitialiser les barres
+            visualizerBars.forEach(bar => {
+                bar.style.height = '4px';
+            });
         });
     });
 
